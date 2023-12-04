@@ -17,46 +17,53 @@ class ExchangeRatesController extends AbstractController
     const EUR_SELL_RATE_DIFF = 0.07;
     const OTHER_SELL_RATE_DIFF = 0.15;
 
-    /**
-     * @Route("/api/exchange-rates", name="exchange_rates")
-     */
-    public function getExchangeRates(): JsonResponse
+   
+    public function getExchangeRates(string $date = null): JsonResponse
     {
+        // Jeśli data nie jest dostarczona, ustaw ją na dzisiejszą datę
+        $date = $date ?: date('Y-m-d');
+    
         $currencies = ['EUR', 'USD', 'CZK', 'IDR', 'BRL'];
         $results = [];
-
+    
         $httpClient = HttpClient::create();
-
+    
         foreach ($currencies as $currency) {
-            $url = "https://api.nbp.pl/api/exchangerates/rates/A/{$currency}?format=json";
+            // Pobierz dane dla dzisiejszej daty
+            $today = new \DateTime();
+            $formattedDate = $today->format('Y-m-d');
 
+            $todayUrl = "https://api.nbp.pl/api/exchangerates/rates/A/{$currency}/{$formattedDate}";
+            $todayResponse = $httpClient->request('GET', $todayUrl);
+    
+            // Pobierz dane dla dostarczonej daty
+            $url = "https://api.nbp.pl/api/exchangerates/rates/A/{$currency}/{$date}";
+            $response = $httpClient->request('GET', $url);
+    
             try {
-                $response = $httpClient->request('GET', $url);
-
-                if ($response->getStatusCode() === Response::HTTP_OK) {
+                if ($todayResponse->getStatusCode() === Response::HTTP_OK && $response->getStatusCode() === Response::HTTP_OK) {
+                    $todayData = $todayResponse->toArray();
                     $data = $response->toArray();
-
+    
                     // Przelicz kursy
                     $buyRate = null;
-                    $totalBuyRate = null;
                     $sellRate = null;
-
+    
                     if ($currency === 'EUR' || $currency === 'USD') {
                         $buyRate = round($data['rates'][0]['mid'] - self::EUR_BUY_RATE_DIFF, 2);
-                        $totalBuyRate = round($data['rates'][0]['mid'], 2);
                         $sellRate = round($data['rates'][0]['mid'] + self::EUR_SELL_RATE_DIFF, 2);
                     } else {
                         // Dla innych walut
-                        $sellRate = round($data['rates'][0]['mid'] + self::OTHER_SELL_RATE_DIFF, 3);
+                        $sellRate = round($data['rates'][0]['mid'] + self::OTHER_SELL_RATE_DIFF, 2);
                     }
-
+    
                     $results[] = [
                         'currency' => $data['currency'],
                         'code' => $data['code'],
                         'buyRate' => $buyRate,
                         'sellRate' => $sellRate,
-                        'todayBuyRate' => round($data['rates'][0]['mid'], 2), 
-                        'todaySellRate' => ceil($data['rates'][0]['mid'] * 100) / 100,
+                        'todayBuyRate' => round($todayData['rates'][0]['mid'], 2), 
+                        'todaySellRate' => ceil($todayData['rates'][0]['mid'] * 100) / 100,
                     ];
                 } else {
                     return $this->json(['error' => 'Unable to fetch exchange rates'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -65,7 +72,7 @@ class ExchangeRatesController extends AbstractController
                 return $this->json(['error' => 'Connection error'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
-
+    
         return $this->json(['rates' => $results]);
     }
 }

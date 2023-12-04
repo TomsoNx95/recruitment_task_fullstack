@@ -53,7 +53,9 @@ const ExchangeRates = () => {
                         {rate.buyRate ? rate.buyRate : 'Brak kupna'}
                       </td>
                       <td>{rate.sellRate}</td>
-                      <td>{rate.todayBuyRate}</td>
+                      <td style={{ color: rate.todayBuyRate ? 'black' : 'red' }}>
+                        {rate.todayBuyRate ? rate.todayBuyRate : 'Brak kupna'}
+                      </td>
                       <td>{rate.todaySellRate}</td>
                     </tr>
                   ))}

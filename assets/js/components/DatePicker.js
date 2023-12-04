@@ -1,19 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const DatePicker = ({ selectedDate, onChange }) => {
+const DatePicker = () => {
   const currentDate = new Date();
-  const minDate = `${currentDate.getFullYear()}-01-01`;
-  const maxDate = currentDate.toISOString().split('T')[0].substring(0, 10);
+
+  const year = currentDate.getFullYear();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+  const day = currentDate.getDate().toString().padStart(2, '0');
+
+  const minDate = `${year}-01-01`;
+  const maxDate = `${year}-${month}-${day}`;
+
+  const [selectedDate, setSelectedDate] = useState(maxDate);
 
   const handleChange = (event) => {
-    const selectedDate = event.target.value;
-    onChange(selectedDate);
+    const newDate = event.target.value;
+    setSelectedDate(newDate);
   };
 
   return (
     <input
       type="date"
-      value={selectedDate || maxDate}
+      value={selectedDate}
       onChange={handleChange}
       min={minDate}
       max={maxDate}

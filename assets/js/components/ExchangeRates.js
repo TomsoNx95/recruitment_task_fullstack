@@ -49,7 +49,9 @@ const ExchangeRates = () => {
                   {exchangeRates.map((rate, index) => (
                     <tr key={index}>
                       <td> {rate.currency} <small >({rate.code })</small></td>
-                      <td>{rate.buyRate}</td>
+                      <td style={{ color: rate.buyRate ? 'black' : 'red' }}>
+                        {rate.buyRate ? rate.buyRate : 'Brak kupna'}
+                      </td>
                       <td>{rate.sellRate}</td>
                       <td>{rate.todayBuyRate}</td>
                       <td>{rate.todaySellRate}</td>

@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DatePicker from './DatePicker';
 
 const ExchangeRates = () => {
   const [exchangeRates, setExchangeRates] = useState([]);
   const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const handleDateChange = (selectedDate) => {
+    // Funkcja obsługująca zmianę daty
+    console.log(selectedDate)
+    setSelectedDate(selectedDate);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +42,9 @@ const ExchangeRates = () => {
               <h1 className="mb-5">Exchange Rates Test</h1>
             </div>
             {error && <p>{error}</p>}
+            <div className="col-md-8 offset-md-2 d-flex justify-content-center">
+              <DatePicker selectedDate={selectedDate} onChange={handleDateChange} />
+            </div>
             {exchangeRates.length > 0 && (
               <table className="table">
                 <thead>

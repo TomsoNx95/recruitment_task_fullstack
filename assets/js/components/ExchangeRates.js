@@ -31,24 +31,28 @@ const ExchangeRates = () => {
         <div className="container">
           <div className="row mt-5">
             <div className="col-md-8 offset-md-2 d-flex justify-content-center">
-              <h1>Exchange Rates Test</h1>
+              <h1 className="mb-5">Exchange Rates Test</h1>
             </div>
             {error && <p>{error}</p>}
             {exchangeRates.length > 0 && (
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Currency</th>
-                    <th>Code</th>
-                    <th>Mid</th>
+                    <th>Waluta</th>
+                    <th>Kurs Kupna</th>
+                    <th>Kurs Sprzedaży</th>
+                    <th>Kurs Kupna (Dzisiaj)</th>
+                    <th>Kurs Sprzedaży (Dzisiaj)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {exchangeRates.map((rate, index) => (
                     <tr key={index}>
-                      <td>{rate.currency}</td>
-                      <td>{rate.code}</td>
-                      <td>{rate.mid}</td>
+                      <td> {rate.currency} <small >({rate.code })</small></td>
+                      <td>{rate.buyRate}</td>
+                      <td>{rate.sellRate}</td>
+                      <td>{rate.todayBuyRate}</td>
+                      <td>{rate.todaySellRate}</td>
                     </tr>
                   ))}
                 </tbody>

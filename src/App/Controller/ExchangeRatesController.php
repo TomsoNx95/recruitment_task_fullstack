@@ -12,6 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExchangeRatesController extends AbstractController
 {
+    // Przeliczniki
+    const EUR_BUY_RATE_DIFF = 0.05;
+    const EUR_SELL_RATE_DIFF = 0.07;
+    const OTHER_SELL_RATE_DIFF = 0.15;
+
     /**
      * @Route("/api/exchange-rates", name="exchange_rates")
      */
@@ -30,10 +35,26 @@ class ExchangeRatesController extends AbstractController
 
                 if ($response->getStatusCode() === Response::HTTP_OK) {
                     $data = $response->toArray();
+
+                    // Przelicz kursy
+                    $buyRate = null;
+                    $sellRate = null;
+
+                    if ($currency === 'EUR' || $currency === 'USD') {
+                        $buyRate = round($data['rates'][0]['mid'] - self::EUR_BUY_RATE_DIFF, 2);
+                        $sellRate = round($data['rates'][0]['mid'] + self::EUR_SELL_RATE_DIFF, 2);
+                    } else {
+                        // Dla innych walut
+                        $sellRate = round($data['rates'][0]['mid'] + self::OTHER_SELL_RATE_DIFF, 2);
+                    }
+
                     $results[] = [
                         'currency' => $data['currency'],
                         'code' => $data['code'],
-                        'mid' => $data['rates'][0]['mid'],
+                        'buyRate' => $buyRate,
+                        'sellRate' => $sellRate,
+                        'todayBuyRate' => round($data['rates'][0]['mid'], 2), 
+                        'todaySellRate' => round($data['rates'][0]['mid'], 2), 
                     ];
                 } else {
                     return $this->json(['error' => 'Unable to fetch exchange rates'], Response::HTTP_INTERNAL_SERVER_ERROR);

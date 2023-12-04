@@ -12,32 +12,37 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExchangeRatesController extends AbstractController
 {
- 
+    /**
+     * @Route("/api/exchange-rates", name="exchange_rates")
+     */
     public function getExchangeRates(): JsonResponse
     {
-        $url = 'https://api.nbp.pl/api/exchangerates/rates/A/USD?format=json';
-        // Utwórz instancję HttpClient
+        $currencies = ['EUR', 'USD', 'CZK', 'IDR', 'BRL'];
+        $results = [];
+
         $httpClient = HttpClient::create();
 
+        foreach ($currencies as $currency) {
+            $url = "https://api.nbp.pl/api/exchangerates/rates/A/{$currency}?format=json";
 
-        try {
-            // Wykonaj zapytanie HTTP do API NBP
-            $response = $httpClient->request('GET', $url);
+            try {
+                $response = $httpClient->request('GET', $url);
 
-            // Sprawdź, czy odpowiedź jest poprawna (status 200)
-            if ($response->getStatusCode() === Response::HTTP_OK) {
-                // Pobierz dane JSON z odpowiedzi
-                $data = $response->toArray();
-
-                // Zwróć dane w formie odpowiedzi JSON
-                return $this->json($data);
-            } else {
-                // Zwróć odpowiedź błędu, jeśli status nie jest 200
-                return $this->json(['error' => 'Unable to fetch exchange rates'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                if ($response->getStatusCode() === Response::HTTP_OK) {
+                    $data = $response->toArray();
+                    $results[] = [
+                        'currency' => $data['currency'],
+                        'code' => $data['code'],
+                        'mid' => $data['rates'][0]['mid'],
+                    ];
+                } else {
+                    return $this->json(['error' => 'Unable to fetch exchange rates'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+            } catch (\Exception $e) {
+                return $this->json(['error' => 'Connection error'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-        } catch (\Exception $e) {
-            // Zwróć odpowiedź błędu w przypadku problemów z połączeniem
-            return $this->json(['error' => 'Connection error'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        return $this->json(['rates' => $results]);
     }
 }

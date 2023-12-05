@@ -8,7 +8,7 @@ const ExchangeRates = () => {
   const [exchangeRates, setExchangeRates] = useState([]);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(date);
-
+  
   const handleDateChange = (selectedDate) => {
     setSelectedDate(selectedDate);
   };
@@ -17,21 +17,21 @@ const ExchangeRates = () => {
     const fetchData = async () => {
       try {
         const baseUrl = 'http://127.0.0.1:8000';
-        const actionApi = '/api/exchange-rates';
-
+        const actionApi = `/api/exchange-rates/${selectedDate}`;
+  
         const response = await axios.get(baseUrl + actionApi);
         console.log(response.data);
-
+  
         const formattedData = response.data.rates || [];
-
+  
         setExchangeRates(formattedData);
       } catch (error) {
         setError('Unable to fetch exchange rates');
       }
     };
-
+  
     fetchData();
-  }, []);
+  }, []); 
 
   return (
     <div>

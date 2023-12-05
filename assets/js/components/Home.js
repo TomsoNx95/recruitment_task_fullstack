@@ -1,7 +1,7 @@
 // ./assets/js/components/Home.js
 
 import React, { Component } from 'react';
-import { Route, Redirect, Switch, Link } from 'react-router-dom';
+import { Route, Redirect, Switch, Link, BrowserRouter } from 'react-router-dom';
 import SetupCheck from "./SetupCheck";
 import ExchangeRates from "./ExchangeRates";
 
@@ -9,7 +9,7 @@ class Home extends Component {
 
   render() {
     return (
-      <div>
+    <BrowserRouter>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
           <Link className={"navbar-brand"} to={"#"}> Telemedi Zadanko </Link>
           <div id="navbarText">
@@ -18,8 +18,7 @@ class Home extends Component {
                 <Link className={"nav-link"} to={"/setup-check"}> React Setup Check </Link>
               </li>
               <li className="nav-item">
-                {/* Dodaj parametr date z aktualną datą */}
-                <Link className={"nav-link"} to={`/exchange-rates?date=${getCurrentDate()}`}> Exchange Rates </Link>
+                <Link className={"nav-link"} to={`/exchange-rates/${getCurrentDate()}`}> Exchange Rates </Link>
               </li>
             </ul>
           </div>
@@ -27,9 +26,9 @@ class Home extends Component {
         <Switch>
           <Redirect exact from="/" to="/setup-check" />
           <Route path="/setup-check" component={SetupCheck} />
-          <Route path="/exchange-rates" component={ExchangeRates} />
+          <Route path="/exchange-rates/:date" component={ExchangeRates} />
         </Switch>
-      </div>
+    </BrowserRouter>
     )
   }
 }

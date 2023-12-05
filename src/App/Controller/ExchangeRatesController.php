@@ -20,9 +20,8 @@ class ExchangeRatesController extends AbstractController
    
     public function getExchangeRates(string $date = null): JsonResponse
     {
-        // Jeśli data nie jest dostarczona, ustaw ją na dzisiejszą datę
-        $date = $date ?: date('Y-m-d');
-    
+        $date = (new \DateTime())->format('Y-m-d');
+       
         $currencies = ['EUR', 'USD', 'CZK', 'IDR', 'BRL'];
         $results = [];
     

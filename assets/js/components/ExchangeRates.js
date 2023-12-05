@@ -8,15 +8,11 @@ const ExchangeRates = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get('date');
-  
+
   const [exchangeRates, setExchangeRates] = useState([]);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(date);
   
-  const handleDateChange = (selectedDate) => {
-    setSelectedDate(selectedDate);
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,18 +20,15 @@ const ExchangeRates = () => {
         const actionApi = `/api/exchange-rates/${selectedDate}`;
   
         const response = await axios.get(baseUrl + actionApi);
-        console.log(response.data);
-  
         const formattedData = response.data.rates || [];
-  
         setExchangeRates(formattedData);
       } catch (error) {
         setError('Unable to fetch exchange rates');
       }
     };
-  
     fetchData();
-  }, []); 
+    
+  }, [selectedDate]); 
 
   return (
     <div>
@@ -47,7 +40,7 @@ const ExchangeRates = () => {
             </div>
             {error && <p>{error}</p>}
             <div className="col-md-8 offset-md-2 d-flex justify-content-center">
-              <DatePicker selectedDate={selectedDate} onChange={handleDateChange} />
+              <DatePicker selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
             </div>
             {exchangeRates.length > 0 && (
               <table className="table">

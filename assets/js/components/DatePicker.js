@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-const DatePicker = () => {
+const DatePicker = ({ selectedDate, setSelectedDate }) => {
   const currentDate = new Date();
 
   const year = currentDate.getFullYear();
@@ -11,7 +11,6 @@ const DatePicker = () => {
   const minDate = `${year}-01-01`;
   const maxDate = `${year}-${month}-${day}`;
 
-  const [selectedDate, setSelectedDate] = useState(maxDate);
   const history = useHistory();
 
   const handleChange = (event) => {
@@ -21,7 +20,7 @@ const DatePicker = () => {
   };
 
   return (
-    <div className="d-flex flex-column align-items-center datePickerContainer mb-3 ">
+    <div className="d-flex flex-column align-items-center datePickerContainer mb-3">
       <label htmlFor="datePicker">Wybierz datę:</label>
       <input
         type="date"
@@ -30,7 +29,7 @@ const DatePicker = () => {
         onChange={handleChange}
         min={minDate}
         max={maxDate}
-        className="form-control" 
+        className="form-control"
       />
     </div>
   );

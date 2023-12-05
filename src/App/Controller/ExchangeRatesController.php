@@ -20,11 +20,13 @@ class ExchangeRatesController extends AbstractController
    
     public function getExchangeRates(string $date = null): JsonResponse
     {
-        $date = (new \DateTime())->format('Y-m-d');
+       
+        if (empty($date)) {
+            $date = (new \DateTime())->format('Y-m-d');
+        }
        
         $currencies = ['EUR', 'USD', 'CZK', 'IDR', 'BRL'];
         $results = [];
-    
         $httpClient = HttpClient::create();
     
         foreach ($currencies as $currency) {
@@ -37,8 +39,9 @@ class ExchangeRatesController extends AbstractController
     
             // Pobierz dane dla dostarczonej daty
             $url = "https://api.nbp.pl/api/exchangerates/rates/A/{$currency}/{$date}";
+            
             $response = $httpClient->request('GET', $url);
-    
+           
             try {
                 if ($todayResponse->getStatusCode() === Response::HTTP_OK && $response->getStatusCode() === Response::HTTP_OK) {
                     $todayData = $todayResponse->toArray();
@@ -68,6 +71,7 @@ class ExchangeRatesController extends AbstractController
                     return $this->json(['error' => 'Unable to fetch exchange rates'], Response::HTTP_INTERNAL_SERVER_ERROR);
                 }
             } catch (\Exception $e) {
+                
                 return $this->json(['error' => 'Connection error'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }

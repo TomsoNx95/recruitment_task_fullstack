@@ -9,7 +9,7 @@ setupcheck:
     controller: App\Controller\DefaultController::setupCheck
 
 exchangerates:
-    path: /api/exchange-rates
+    path: /api/exchange-rates/{date}
     controller: App\Controller\ExchangeRatesController::getExchangeRates
 
 index:

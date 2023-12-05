@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from './DatePicker';
+import { useParams } from 'react-router-dom';
 
 const ExchangeRates = () => {
+  const { date } = useParams();
   const [exchangeRates, setExchangeRates] = useState([]);
   const [error, setError] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(date);
 
   const handleDateChange = (selectedDate) => {
-    // Funkcja obsługująca zmianę daty
-    console.log(selectedDate)
     setSelectedDate(selectedDate);
   };
 

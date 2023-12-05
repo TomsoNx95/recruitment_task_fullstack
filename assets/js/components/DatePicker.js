@@ -18,13 +18,18 @@ const DatePicker = () => {
   };
 
   return (
-    <input
-      type="date"
-      value={selectedDate}
-      onChange={handleChange}
-      min={minDate}
-      max={maxDate}
-    />
+    <div className="d-flex flex-column align-items-center datePickerContainer mb-3 ">
+      <label htmlFor="datePicker">Wybierz datę:</label>
+      <input
+        type="date"
+        id="datePicker"
+        value={selectedDate}
+        onChange={handleChange}
+        min={minDate}
+        max={maxDate}
+        className="form-control" 
+      />
+    </div>
   );
 };
 

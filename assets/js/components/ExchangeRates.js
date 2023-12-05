@@ -64,6 +64,7 @@ const ExchangeRates = () => {
                             <th>Waluta</th>
                             <th>Kurs Kupna</th>
                             <th>Kurs Sprzedaży</th>
+                            <th>Średnia</th>
                             <th>Kurs Kupna (Dzisiaj)</th>
                             <th>Kurs Sprzedaży (Dzisiaj)</th>
                           </tr>
@@ -77,6 +78,7 @@ const ExchangeRates = () => {
                               <td style={{ color: rate.buyRate ? 'black' : 'red' }}>
                                 {rate.buyRate ? rate.buyRate : 'Brak kupna'}
                               </td>
+                              <td>{rate.mid}</td>
                               <td>{rate.sellRate}</td>
                               <td style={{ color: rate.todayBuyRate ? 'black' : 'red' }}>
                                 {rate.todayBuyRate ? rate.todayBuyRate : 'Brak kupna'}

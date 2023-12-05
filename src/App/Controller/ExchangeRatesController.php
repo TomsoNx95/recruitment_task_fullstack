@@ -45,15 +45,20 @@ class ExchangeRatesController extends AbstractController
                     $data = $response->toArray();
     
                     // Przelicz kursy
+                    $todayBuyRate = null;
                     $buyRate = null;
+                    $todaySellRate = null;
                     $sellRate = null;
     
                     if ($currency === 'EUR' || $currency === 'USD') {
-                        $buyRate = round($data['rates'][0]['mid'] - self::EUR_BUY_RATE_DIFF, 2);
-                        $sellRate = round($data['rates'][0]['mid'] + self::EUR_SELL_RATE_DIFF, 2);
+                        $todayBuyRate = $data['rates'][0]['mid'] - self::EUR_BUY_RATE_DIFF;
+                        $buyRate = $data['rates'][0]['mid'] - self::EUR_BUY_RATE_DIFF;
+                        $todaySellRate = $todayData['rates'][0]['mid'] + self::EUR_SELL_RATE_DIFF;
+                        $sellRate = $data['rates'][0]['mid'] + self::EUR_SELL_RATE_DIFF;
                     } else {
                         // Dla innych walut
-                        $sellRate = round($data['rates'][0]['mid'] + self::OTHER_SELL_RATE_DIFF, 2);
+                        $todaySellRate = $todayData['rates'][0]['mid'] + self::OTHER_SELL_RATE_DIFF;
+                        $sellRate = $data['rates'][0]['mid'] + self::OTHER_SELL_RATE_DIFF;
                     }
     
                     $results[] = [
@@ -61,8 +66,9 @@ class ExchangeRatesController extends AbstractController
                         'code' => $data['code'],
                         'buyRate' => $buyRate,
                         'sellRate' => $sellRate,
-                        'todayBuyRate' => round($todayData['rates'][0]['mid'], 2), 
-                        'todaySellRate' => ceil($todayData['rates'][0]['mid'] * 100) / 100,
+                        'todayBuyRate' => $todayBuyRate, 
+                        'todaySellRate' => $todaySellRate ,
+                        'mid' => $data['rates'][0]['mid']
                     ];
                 } else {
                     return $this->json(['error' => 'Unable to fetch exchange rates'], Response::HTTP_INTERNAL_SERVER_ERROR);

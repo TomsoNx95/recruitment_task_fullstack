@@ -18,7 +18,7 @@ class Home extends Component {
                 <Link className={"nav-link"} to={"/setup-check"}> React Setup Check </Link>
               </li>
               <li className="nav-item">
-                <Link className={"nav-link"} to={`/exchange-rates/${getCurrentDate()}`}> Exchange Rates </Link>
+                <Link className={"nav-link"} to={`/exchange-rates?date=${getCurrentDate()}`}> Exchange Rates </Link>
               </li>
             </ul>
           </div>
@@ -26,7 +26,7 @@ class Home extends Component {
         <Switch>
           <Redirect exact from="/" to="/setup-check" />
           <Route path="/setup-check" component={SetupCheck} />
-          <Route path="/exchange-rates/:date" component={ExchangeRates} />
+          <Route path="/exchange-rates" component={ExchangeRates} />
         </Switch>
     </BrowserRouter>
     )

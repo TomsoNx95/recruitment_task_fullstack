@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const DatePicker = () => {
   const currentDate = new Date();
@@ -11,10 +12,12 @@ const DatePicker = () => {
   const maxDate = `${year}-${month}-${day}`;
 
   const [selectedDate, setSelectedDate] = useState(maxDate);
+  const history = useHistory();
 
   const handleChange = (event) => {
     const newDate = event.target.value;
     setSelectedDate(newDate);
+    history.push(`/exchange-rates?date=${newDate}`);
   };
 
   return (

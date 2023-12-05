@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from './DatePicker';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const ExchangeRates = () => {
-  const { date } = useParams();
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const date = queryParams.get('date');
+  
   const [exchangeRates, setExchangeRates] = useState([]);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(date);

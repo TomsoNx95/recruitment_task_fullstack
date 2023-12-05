@@ -30,11 +30,8 @@ class ExchangeRatesController extends AbstractController
         $httpClient = HttpClient::create();
     
         foreach ($currencies as $currency) {
-            // Pobierz dane dla dzisiejszej daty
-            $today = new \DateTime();
-            $formattedDate = $today->format('Y-m-d');
-
-            $todayUrl = "https://api.nbp.pl/api/exchangerates/rates/A/{$currency}/{$formattedDate}";
+         
+            $todayUrl = "https://api.nbp.pl/api/exchangerates/rates/A/{$currency}/today";
             $todayResponse = $httpClient->request('GET', $todayUrl);
     
             // Pobierz dane dla dostarczonej daty

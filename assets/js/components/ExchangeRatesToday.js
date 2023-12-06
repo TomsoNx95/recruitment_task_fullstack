@@ -43,7 +43,7 @@ const ExchangeRatesToday = () => {
               <>
                 {error ? (
                   <div className="col-md-8 offset-md-2 d-flex justify-content-center">
-                    <p>{error}</p>
+                    <p className="text-danger">{error}</p>
                   </div>
                 ) : (
                   <>

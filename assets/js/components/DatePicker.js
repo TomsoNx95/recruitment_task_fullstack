@@ -14,7 +14,10 @@ const DatePicker = ({ selectedDate, setSelectedDate }) => {
   const history = useHistory();
 
   const handleChange = (event) => {
-    const newDate = event.target.value;
+    let newDate = event.target.value;
+    if(newDate == ''){
+      newDate = maxDate;
+    }
     setSelectedDate(newDate);
     history.push(`/exchange-rates?date=${newDate}`);
   };

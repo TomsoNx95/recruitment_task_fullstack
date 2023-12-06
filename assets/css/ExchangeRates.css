@@ -1,0 +1,22 @@
+.exchange-rates-container {
+    display: flex;
+}
+  
+.date-container,
+.today-container {
+    flex: 1;
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+}
+  
+@media (max-width: 768px) {
+    .exchange-rates-container {
+      flex-direction: column;
+    }
+  
+    .date-container,
+    .today-container {
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+}

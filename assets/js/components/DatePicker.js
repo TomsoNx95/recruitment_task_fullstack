@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 /**
@@ -15,35 +15,58 @@ import { useHistory } from 'react-router-dom';
  * @returns {JSX.Element} Komponent DatePicker.
  */
 const DatePicker = ({ selectedDate, setSelectedDate }) => {
-  // Pobranie aktualnej daty dla ustawienia minimalnej i maksymalnej daty w polu wejściowym 'date'.
   const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
-  const day = currentDate.getDate().toString().padStart(2, '0');
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+  const currentDay = currentDate.getDate().toString().padStart(2, '0');
 
-  const minDate = `${year}-01-01`;
-  const maxDate = `${year}-${month}-${day}`;
+  // Sprawdzenie czy podany rok nie jest mniejszy od aktualnego
+  let maxYear = currentYear;
+
+  const isValidYear = new Date(selectedDate).getFullYear() >= currentYear;
+  if (!isValidYear) {
+    maxYear = new Date().getFullYear();
+  }
+
+  const minDate = `${currentYear}-01-01`;
+  const maxDate = `${maxYear}-${currentMonth}-${currentDay}`;
 
   // Pobranie obiektu historii routingu z React Router.
   const history = useHistory();
 
   /**
    * Obsługuje zmianę daty w polu wejściowym i aktualizuje stan oraz adres URL.
-   * Jeśli data zostanie wyczyszczona, ustawia na maksymalną dostępną datę.
+   * Jeśli data zostanie wyczyszczona, ustaw maksymalną dostępną datę.
    *
    * @param {Object} event - Obiekt zdarzenia zmiany wartości pola wejściowego.
    */
   const handleChange = (event) => {
     let newDate = event.target.value;
-    // Jeśli data zostanie wyczyszczona, ustaw maksymalną dostępną datę.
-    if (newDate === '' || newDate === undefined ) {
+
+    const isValidYear = new Date(newDate).getFullYear() >= currentYear;
+
+    if (!isValidYear) {
       newDate = maxDate;
     }
-    // Ustaw nową datę za pomocą funkcji przekazanej przez właściwość.
+
     setSelectedDate(newDate);
-    // Zaktualizuj adres URL, aby uwzględnić nową datę.
     history.push(`/exchange-rates?date=${newDate}`);
   };
+
+  /**
+   * Ustawia `maxDate` na aktualną datę w przypadku, gdy rok jest mniejszy od aktualnego.
+   */
+  const setMaxDateIfNeeded = () => {
+    if (!isValidYear) {
+      setSelectedDate(maxDate);
+      history.push(`/exchange-rates?date=${maxDate}`);
+    }
+  };
+
+  // Efekt dla ustawienia `maxDate` przy pierwszym renderowaniu komponentu.
+  useEffect(() => {
+    setMaxDateIfNeeded();
+  }, [isValidYear, maxDate, setSelectedDate]);
 
   return (
     <div className="d-flex flex-column align-items-center datePickerContainer mb-3">

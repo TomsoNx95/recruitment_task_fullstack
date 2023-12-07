@@ -41,6 +41,11 @@ class ExchangeRatesController extends AbstractController
             $date = (new \DateTime())->format('Y-m-d');
         }
 
+        // Sprawdzamy, czy podana data jest wcześniejsza niż obecny rok
+        if ($date != 'today' && !$this->isValidYear($date)) {
+            return $this->json(['error' => 'Invalid year provided'], Response::HTTP_BAD_REQUEST);
+        }
+        
         // Tworzymy pustą tablicę przed zapisem danych aby, uniknac problemu gdy Api zwróci 0 kursów walut..
         $results = [];
 
@@ -142,4 +147,20 @@ class ExchangeRatesController extends AbstractController
     {
         return $currency === 'EUR' || $currency === 'USD';
     }
+
+    /**
+     * Sprawdza, czy podana data ma poprawny rok.
+     *
+     * @param string $date
+     * @return bool
+     */
+    private function isValidYear(string $date): bool
+    {
+        $currentYear = (new \DateTime())->format('Y');
+        $providedYear = explode('-', $date)[0];
+
+        return $providedYear >= $currentYear;
+    }
+
+
 }

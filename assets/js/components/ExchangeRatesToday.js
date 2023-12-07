@@ -28,7 +28,7 @@ const ExchangeRatesToday = () => {
         setExchangeRates(formattedData);
         setError(null);
       } catch (error) {
-        setError('Brak kursu dla aktualnego dnia');
+        setError('Brak kursu dla aktualnego dnia. Pamiętaj że kursy na dzień dzisiejszy są aktualizowane około godziny 12');
       } finally {
         setLoading(false);
       }

@@ -36,7 +36,7 @@ const DatePicker = ({ selectedDate, setSelectedDate }) => {
   const handleChange = (event) => {
     let newDate = event.target.value;
     // Jeśli data zostanie wyczyszczona, ustaw maksymalną dostępną datę.
-    if (newDate === '') {
+    if (newDate === '' || newDate === undefined ) {
       newDate = maxDate;
     }
     // Ustaw nową datę za pomocą funkcji przekazanej przez właściwość.

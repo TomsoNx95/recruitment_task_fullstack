@@ -12,6 +12,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExchangeRatesController extends AbstractController
 {
+    // Url do ktorego będziemy robić strzały w celu pobrania kursu walut
+    const urlApiNbp = 'https://api.nbp.pl';
+
     // Waluty, jeśli chcemy wyświetlać inne waluty, modyfikujemy w tym miejscu
     // Moglibyśmy to wyciągnąc do zmiennych środowiskowych, aby wygodnie modyfikować te wartości
     const CURRIES = ['EUR', 'USD', 'CZK', 'IDR', 'BRL'];
@@ -38,22 +41,27 @@ class ExchangeRatesController extends AbstractController
             $date = (new \DateTime())->format('Y-m-d');
         }
 
+        // Tworzymy pustą tablicę przed zapisem danych aby, uniknac problemu gdy Api zwróci 0 kursów walut..
         $results = [];
 
         // Iteracja przez wszystkie zdefiniowane waluty
         foreach (self::CURRIES as $currency) {
-            $url = $this->buildUrl($currency, $date);
 
+            // Tworzymy odpowiedni url do strzału w zależności od parametru w url na naszej stronie.
+            $action = '/api/exchangerates/rates/A/';
+            $url = $this->buildUrl($currency, $date, $action);
+
+            // Robimy strzał do Api Nbp
             $response = $httpClient->request('GET', $url);
 
             try {
                 if ($response->getStatusCode() === Response::HTTP_OK) {
-                    $data = $response->toArray();
+                    // Zamieniamy odpowiedź ze strzału na tablicę
+                    $responseData = $response->toArray();
 
-                    // Liczymy waluty po odpowiednich przelicznikach
-                    $result = $this->calculateRates($data, $currency);
-                    $results[] = $result;
-
+                    // Liczymy waluty po odpowiednich przelicznikach, możemy wpisać jako 3 parametr false, aby nie zaorkąglać 4 miejsc po przecinku....
+                    $results[] = $this->calculateRates($responseData, $currency);
+                
                 } else {
                     return $this->json(['error' => 'Unable to fetch exchange rates'], Response::HTTP_INTERNAL_SERVER_ERROR);
                 }
@@ -61,15 +69,14 @@ class ExchangeRatesController extends AbstractController
                 return $this->json(['error' => 'Connection error'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
-
+        
         return $this->json(['rates' => $results]);
     }
 
 
-    
 // Tutaj są funkcje odpowiedzialne za logikę biznesową. Powinniśmy je przenieść do serwisu.
 // Miałem mało czasu, aby naprawić te serwisy, więc tymczasowo przeniosłem to na dół
-// @todo Przenieś logikę biznesową do odpowiedniego serwisu.
+// @todo Napraw serwisy i przenieś poniższą logikę biznesową do odpowiedniego serwisu.
 
     /**
      * Buduje URL do API NBP w zależności od podanej waluty i daty.
@@ -78,14 +85,15 @@ class ExchangeRatesController extends AbstractController
      * @param string $date
      * @return string
      */
-    private function buildUrl(string $currency, string $date): string
+    private function buildUrl(string $currency, string $date, string $action): string
     {
-        $endpoint = 'https://api.nbp.pl/api/exchangerates/rates/A/';
         if ($date === 'today') {
-            return "{$endpoint}{$currency}/today";
+            $url = sprintf('%s%s%s/today', self::urlApiNbp, $action, $currency);
+        } else {
+            $url = sprintf('%s%s%s/%s', self::urlApiNbp, $action, $currency, $date);
         }
-
-        return "{$endpoint}{$currency}/{$date}";
+    
+        return $url;
     }
 
     /**
@@ -93,9 +101,10 @@ class ExchangeRatesController extends AbstractController
      *
      * @param array    $data
      * @param string   $currency
+     * @param bool     $round = false  Może przyjąć false jeśli nie chcemy zaokraglać
      * @return array
      */
-    private function calculateRates(array $data, string $currency): array
+    private function calculateRates(array $data, string $currency, bool $round = true): array
     {
         $buyRate = null;
         $sellRate = null;
@@ -107,13 +116,19 @@ class ExchangeRatesController extends AbstractController
             $sellRate = $data['rates'][0]['mid'] + self::OTHER_SELL_RATE_DIFF;
         }
 
+        // Warunek sprawdzający, czy należy zaokrąglić 4 miejsca po przecinku, zawsze musimy otrzymywać 4 liczby po przecinku
+        if ($round) {
+            $buyRate = $buyRate !== null ? number_format(round($buyRate, 4), 4, '.', '') : null;
+            $sellRate = $sellRate !== null ? number_format(round($sellRate, 4), 4, '.', '') : null;
+        }
+
         $result = [
             'currency' => $data['currency'],
             'code' => $data['code'],
-            'buyRate' => $buyRate,
-            'sellRate' => $sellRate
+            'buyRate' => (string)$buyRate,
+            'sellRate' => (string)$sellRate
         ];
- 
+        
         return $result;
     }
 

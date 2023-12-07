@@ -16,7 +16,7 @@ const ExchangeRatesToday = () => {
     try {
       setLoading(true);
       // Błędny baseUrl dla celów testowych - popraw go w rzeczywistości.
-      const baseUrl = 'http://127.0.0.1:8000';
+      const baseUrl = 'telemedi-zadanie.localhost';
       const actionApi = '/api/exchange-rates/today';
       const response = await axios.get(baseUrl + actionApi);
       const formattedData = response.data.rates || [];

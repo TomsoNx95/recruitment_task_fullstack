@@ -26,7 +26,7 @@ const ExchangeRatesDate = () => {
         setLoading(true);
 
         // Ustawienie podstawowego URL API
-        const baseUrl = 'http://127.0.0.1:8000';
+        const baseUrl = 'telemedi-zadanie.localhost';
         const actionApi = `/api/exchange-rates/${selectedDate}`;
 
         // Pobranie danych z API

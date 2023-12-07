@@ -10,7 +10,7 @@ class SetupCheck extends Component {
     }
 
     getBaseUrl() {
-        return 'http://127.0.0.1:8000';
+        return 'telemedi-zadanie.localhost';
     }
 
     componentDidMount() {
@@ -19,7 +19,7 @@ class SetupCheck extends Component {
 
     checkApiSetup() {
         //const baseUrl = this.getBaseUrl();
-        const baseUrl = 'http://127.0.0.1:8000';
+        const baseUrl = 'telemedi-zadanie.localhost';
         axios.get(baseUrl + `/api/setup-check?testParam=1`).then(response => {
             let responseIsOK = response.data && response.data.testParam === 1
             this.setState({ setupCheck: responseIsOK, loading: false})

@@ -9,5 +9,4 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ExchangeRatesController extends AbstractController
 {
 
-
 }

@@ -7,7 +7,7 @@ namespace App\Config;
 /**
  * CurrencyConfig
  */
-class CurrencyConfig
+final class CurrencyConfig
 {
     public const PLN = 'PLN';
 

@@ -22,6 +22,11 @@ final class ExchangeRateDTO
     /**
      * @var string
      */
+    protected $from;
+
+    /**
+     * @var string
+     */
     protected $fromFullname;
 
     /**
@@ -35,6 +40,14 @@ final class ExchangeRateDTO
     public function getMidValue(): float
     {
         return round($this->midValue, 2);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFrom(): string
+    {
+        return $this->from;
     }
 
     /**

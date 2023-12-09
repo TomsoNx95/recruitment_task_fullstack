@@ -128,6 +128,7 @@ class ExchangeRateService
                         new ExchangeRateDTO([
                             'midValue' => $rate['mid'],
                             'date' => $rateList->getDate(),
+                            'from' => $currency,
                             'fromFullname' => $rate['currency']
                         ]),
                         $exchangeCurrency
@@ -137,7 +138,7 @@ class ExchangeRateService
 
             unset($supportedRateList[$currency]);
         }
-        dd($this->exchangeRateFactory->getExchangeRates());
+
         return $this->exchangeRateFactory->getExchangeRates();
     }
 }

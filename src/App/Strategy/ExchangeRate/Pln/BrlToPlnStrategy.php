@@ -31,7 +31,7 @@ final class BrlToPlnStrategy implements ExchangeRateStrategyInterface
     private $fromFullname;
 
     /**
-     * @var \App\Entity\ExchangeRate
+     * @var ExchangeRate
      */
     private $exchangeRate;
 

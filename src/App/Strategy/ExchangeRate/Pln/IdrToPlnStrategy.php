@@ -58,7 +58,7 @@ final class IdrToPlnStrategy implements ExchangeRateStrategyInterface
     }
 
     /**
-     * @return \App\Entity\ExchangeRate
+     * @return ExchangeRate
      */
     public function getCalculatedExchangeRate(): ExchangeRate
     {

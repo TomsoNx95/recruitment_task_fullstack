@@ -23,7 +23,7 @@ use Exception;
 /**
  * Class ExchangeRateService
  */
-class ExchangeRateService
+final class ExchangeRateService
 {
     /**
      * @var ApiNbpService
@@ -31,20 +31,11 @@ class ExchangeRateService
     private $apiNbpService;
 
     /**
-     * @var ExchangeRateFactory
-     */
-    private $exchangeRateFactory;
-
-    /**
      * @param ApiNbpService $apiNbpService
-     * @param ExchangeRateFactory $exchangeRateFactory
      */
-    public function __construct(
-        ApiNbpService $apiNbpService,
-        ExchangeRateFactory $exchangeRateFactory
-    ) {
+    public function __construct(ApiNbpService $apiNbpService)
+    {
         $this->apiNbpService = $apiNbpService;
-        $this->exchangeRateFactory = $exchangeRateFactory;
     }
 
     /**
@@ -120,10 +111,11 @@ class ExchangeRateService
             array_flip($supportedCurrencies)
         );
 
+        $exchangeRateFactory = new ExchangeRateFactory();
+
         foreach ($supportedRateList as $currency => $rate) {
-            $this->exchangeRateFactory->addExchangeRate(
-                $this
-                    ->exchangeRateFactory
+            $exchangeRateFactory->addExchangeRate(
+                $exchangeRateFactory
                     ->getStrategyByCurrency(
                         new ExchangeRateDTO([
                             'midValue' => $rate['mid'],
@@ -139,6 +131,6 @@ class ExchangeRateService
             unset($supportedRateList[$currency]);
         }
 
-        return $this->exchangeRateFactory->getExchangeRates();
+        return $exchangeRateFactory->getExchangeRates();
     }
 }

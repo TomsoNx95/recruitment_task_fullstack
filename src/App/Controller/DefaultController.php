@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Service\ExchangeRateService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{
     Request,
@@ -16,16 +15,6 @@ use Symfony\Component\HttpFoundation\{
  */
 class DefaultController extends AbstractController
 {
-    /**
-     * @var ExchangeRateService
-     */
-    private $exchangeRateService;
-
-    public function __construct(ExchangeRateService $exchangeRateService)
-    {
-        $this->exchangeRateService = $exchangeRateService;
-    }
-
     /**
      * @return Response
      */

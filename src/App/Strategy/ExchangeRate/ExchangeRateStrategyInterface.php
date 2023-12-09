@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Strategy\ExchangeRate;
 
-use App\ValueObject\Currency;
+use App\ValueObject\ExchangeRate;
 
 /**
  * Interface ExchangeRateStrategyInterface
@@ -12,16 +12,39 @@ use App\ValueObject\Currency;
 interface ExchangeRateStrategyInterface
 {
     /**
-     * @param float $value
-     * @return Currency
+     * @return void
      */
-    public function buy(float $value): Currency;
+    public function mid(): void;
 
     /**
-     * @param float $value
-     * @return Currency
+     * @return void
      */
-    public function sell(float $value): Currency;
+    public function buy(): void;
+
+    /**
+     * @return void
+     */
+    public function sell(): void;
+
+    /**
+     * @return void
+     */
+    public function from(): void;
+
+    /**
+     * @return void
+     */
+    public function to(): void;
+
+    /**
+     * @return void
+     */
+    public function date(): void;
+
+    /**
+     * @return ExchangeRate
+     */
+    public function getExchangeRate(): ExchangeRate;
 
     /**
      * @param string $from

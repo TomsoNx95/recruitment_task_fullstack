@@ -4,6 +4,11 @@
 #  methods:  GET
 #
 
+exchangeratelist:
+    path: /api/exchange-rate-list
+    controller: App\Controller\ExchangeRatesController::getList
+    methods: GET
+
 setupcheck:
     path: /api/setup-check
     controller: App\Controller\DefaultController::setupCheck

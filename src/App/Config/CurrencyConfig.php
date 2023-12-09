@@ -21,12 +21,13 @@ final class CurrencyConfig
 
     public const BRL = 'BRL';
 
-    public const SUPPORTED_CURRIENCES = [
-        self::PLN => self::PLN,
-        self::EUR => self::EUR,
-        self::USD => self::USD,
-        self::CZK => self::CZK,
-        self::IDR => self::IDR,
-        self::BRL => self::BRL,
+    public const SUPPORTED_CURRENCIES = [
+        self::PLN => [
+            self::EUR,
+            self::USD,
+            self::CZK,
+            self::IDR,
+            self::BRL,
+        ],
     ];
 }

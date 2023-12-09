@@ -6,7 +6,10 @@ namespace App\Controller;
 
 use App\Service\ExchangeRateService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{Request, Response,};
+use Symfony\Component\HttpFoundation\{
+    Request,
+    Response,
+};
 
 /**
  * Class DefaultController

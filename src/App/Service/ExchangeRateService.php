@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Config\CurrencyConfig;
+use App\DTO\ExchangeRateDTO;
+use App\Entity\ExchangeRate;
 use App\Exception\NotSupportedCurrencyException;
 use App\Factory\ExchangeRateFactory;
 use App\Helper\ArrayHelper;
-use App\ValueObject\ExchangeRate;
+use App\ValueObject\ExchangeRateList;
+use DateTimeImmutable;
 use Symfony\Contracts\HttpClient\Exception\{
     ClientExceptionInterface,
     RedirectionExceptionInterface,
     ServerExceptionInterface,
     TransportExceptionInterface,
 };
-use DateTimeImmutable;
+use Exception;
 
 /**
  * Class ExchangeRateService
@@ -51,12 +54,18 @@ class ExchangeRateService
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws NotSupportedCurrencyException
+     * @throws Exception
      */
     public function getExchangeRateListToday(string $exchangeCurrency = CurrencyConfig::PLN): array
     {
-        $rateListToday = ArrayHelper::prepareArrayByField(
-            $this->apiNbpService->getExchangeRatesTableAToday()[0]['rates'] ?? [],
-            'code'
+        $fetchedRateListApi = $this->apiNbpService->getExchangeRatesTableAToday();
+
+        $rateListToday = new ExchangeRateList(
+            ArrayHelper::prepareArrayByField(
+                $fetchedRateListApi[0]['rates'] ?? [],
+                'code'
+            ),
+            new DateTimeImmutable($fetchedRateListApi[0]['effectiveDate'] ?? '')
         );
 
         return $this->getExchangeRateList(
@@ -72,27 +81,33 @@ class ExchangeRateService
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      * @throws NotSupportedCurrencyException
+     * @throws Exception
      */
     public function getExchangeRateListByDate(DateTimeImmutable $date, string $exchangeCurrency = CurrencyConfig::PLN): array
     {
-        $rateListToday = ArrayHelper::prepareArrayByField(
-            $this->apiNbpService->getExchangeRatesTableAByDate($date)[0]['rates'] ?? [],
-            'code'
+        $fetchedRateListApi = $this->apiNbpService->getExchangeRatesTableAByDate($date);
+
+        $rateListByDate = new ExchangeRateList(
+            ArrayHelper::prepareArrayByField(
+                $fetchedRateListApi[0]['rates'] ?? [],
+                'code'
+            ),
+            new DateTimeImmutable($fetchedRateListApi[0]['effectiveDate'] ?? '')
         );
 
         return $this->getExchangeRateList(
-            $rateListToday,
+            $rateListByDate,
             $exchangeCurrency
         );
     }
 
     /**
-     * @param array $rateList
+     * @param ExchangeRateList $rateList
      * @param string $exchangeCurrency
      * @return ExchangeRate[]
      * @throws NotSupportedCurrencyException
      */
-    private function getExchangeRateList(array $rateList, string $exchangeCurrency): array
+    private function getExchangeRateList(ExchangeRateList $rateList, string $exchangeCurrency): array
     {
         $supportedCurrencies = CurrencyConfig::SUPPORTED_CURRENCIES[$exchangeCurrency] ?? [];
 
@@ -100,17 +115,27 @@ class ExchangeRateService
             throw new NotSupportedCurrencyException();
         }
 
-        $rateList = array_intersect_key(
-            $rateList,
+        $supportedRateList = array_intersect_key(
+            $rateList->getRates(),
             array_flip($supportedCurrencies)
         );
 
-        foreach ($rateList as $currency => $rate) {
+        foreach ($supportedRateList as $currency => $rate) {
             $this->exchangeRateFactory->addExchangeRate(
-                $this->exchangeRateFactory
-                    ->getStrategyByCurrency($currency)
-                    ->getExchangeRate()
+                $this
+                    ->exchangeRateFactory
+                    ->getStrategyByCurrency(
+                        new ExchangeRateDTO([
+                            'midValue' => $rate['mid'],
+                            'date' => $rateList->getDate(),
+                            'fromFullname' => $rate['currency']
+                        ]),
+                        $exchangeCurrency
+                    )
+                    ->getCalculatedExchangeRate()
             );
+
+            unset($supportedRateList[$currency]);
         }
         dd($this->exchangeRateFactory->getExchangeRates());
         return $this->exchangeRateFactory->getExchangeRates();

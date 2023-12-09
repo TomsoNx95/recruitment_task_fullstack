@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use App\Config\CurrencyConfig;
+use App\DTO\ExchangeRateDTO;
+use App\Entity\ExchangeRate;
 use App\Strategy\ExchangeRate\ExchangeRateStrategyInterface;
 use App\Strategy\ExchangeRate\Pln\UsdToPlnStrategy;
-use App\ValueObject\ExchangeRate;
-use DateTimeImmutable;
 
 /**
  * Class ExchangeRateFactory
@@ -21,21 +20,23 @@ class ExchangeRateFactory
     private $exchangeRates = [];
 
     /**
+     * @param ExchangeRateDTO $exchangeRateDTO
      * @param string $currency
      * @return ExchangeRateStrategyInterface
      */
-    public function getStrategyByCurrency(string $currency): ExchangeRateStrategyInterface
+    public function getStrategyByCurrency(ExchangeRateDTO $exchangeRateDTO, string $currency): ExchangeRateStrategyInterface
     {
 
 //        switch ($currency) {
 //            case CurrencyConfig::PLN:
 //                return new
 //        }
-        return (new UsdToPlnStrategy(20, new DateTimeImmutable()));
+
+        return (new UsdToPlnStrategy($exchangeRateDTO));
     }
 
     /**
-     * @param ExchangeRate $exchangeRate
+     * @param \App\Entity\ExchangeRate $exchangeRate
      * @return void
      */
     public function addExchangeRate(ExchangeRate $exchangeRate): void
@@ -44,7 +45,7 @@ class ExchangeRateFactory
     }
 
     /**
-     * @return ExchangeRate[]
+     * @return \App\Entity\ExchangeRate[]
      */
     public function getExchangeRates(): array
     {

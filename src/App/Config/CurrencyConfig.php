@@ -30,4 +30,6 @@ final class CurrencyConfig
             self::BRL,
         ],
     ];
+
+    public const PLN_FULLNAME = 'Polski złoty';
 }

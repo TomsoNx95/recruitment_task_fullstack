@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Strategy\ExchangeRate;
 
-use App\ValueObject\ExchangeRate;
+use App\Entity\ExchangeRate;
 
 /**
  * Interface ExchangeRateStrategyInterface
@@ -12,39 +12,9 @@ use App\ValueObject\ExchangeRate;
 interface ExchangeRateStrategyInterface
 {
     /**
-     * @return void
+     * @return \App\Entity\ExchangeRate
      */
-    public function mid(): void;
-
-    /**
-     * @return void
-     */
-    public function buy(): void;
-
-    /**
-     * @return void
-     */
-    public function sell(): void;
-
-    /**
-     * @return void
-     */
-    public function from(): void;
-
-    /**
-     * @return void
-     */
-    public function to(): void;
-
-    /**
-     * @return void
-     */
-    public function date(): void;
-
-    /**
-     * @return ExchangeRate
-     */
-    public function getExchangeRate(): ExchangeRate;
+    public function getCalculatedExchangeRate(): ExchangeRate;
 
     /**
      * @param string $from

@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Strategy\ExchangeRate\Pln;
 
 use App\Config\CurrencyConfig;
+use App\DTO\ExchangeRateDTO;
+use App\Entity\ExchangeRate;
 use App\Strategy\ExchangeRate\ExchangeRateStrategyInterface;
-use App\ValueObject\ExchangeRate;
 use DateTimeImmutable;
 
 /**
@@ -20,72 +21,30 @@ final class CzkToPlnStrategy implements ExchangeRateStrategyInterface
     private $midValue;
 
     /**
-     * @var ExchangeRate
-     */
-    private $exchangeRate;
-
-    /**
      * @var DateTimeImmutable
      */
     private $date;
 
     /**
-     * @param float $midValue
-     * @param DateTimeImmutable $date
+     * @var string
      */
-    public function __construct(float $midValue, DateTimeImmutable $date)
+    private $fromFullname;
+
+    /**
+     * @var ExchangeRate
+     */
+    private $exchangeRate;
+
+    /**
+     * @param ExchangeRateDTO $exchangeRate
+     */
+    public function __construct(ExchangeRateDTO $exchangeRate)
     {
-        $this->midValue = $midValue;
-        $this->date = $date;
+        $this->midValue = $exchangeRate->getMidValue();
+        $this->date = $exchangeRate->getDate();
+        $this->fromFullname = $exchangeRate->getFromFullname();
+
         $this->exchangeRate = new ExchangeRate();
-    }
-
-    /**
-     * @return void
-     */
-    public function mid(): void
-    {
-        $this->exchangeRate->setMid($this->midValue);
-    }
-
-    /**
-     * @return void
-     */
-    public function buy(): void
-    {
-        $this->exchangeRate->setBuy($this->midValue - 0.05);
-    }
-
-    /**
-     * @return void
-     */
-    public function sell(): void
-    {
-        $this->exchangeRate->setSell($this->midValue + 0.07);
-    }
-
-    /**
-     * @return void
-     */
-    public function from(): void
-    {
-        $this->exchangeRate->setFrom(CurrencyConfig::CZK);
-    }
-
-    /**
-     * @return void
-     */
-    public function to(): void
-    {
-        $this->exchangeRate->setTo(CurrencyConfig::PLN);
-    }
-
-    /**
-     * @return void
-     */
-    public function date(): void
-    {
-        $this->exchangeRate->setDate($this->date);
     }
 
     /**
@@ -101,8 +60,18 @@ final class CzkToPlnStrategy implements ExchangeRateStrategyInterface
     /**
      * @return ExchangeRate
      */
-    public function getExchangeRate(): ExchangeRate
+    public function getCalculatedExchangeRate(): ExchangeRate
     {
-        return $this->exchangeRate;
+        return $this
+            ->exchangeRate
+            ->setMid($this->midValue)
+            ->setBuy(null)
+            ->setSell($this->midValue + 0.15)
+            ->setFrom(CurrencyConfig::CZK)
+            ->setFromFullname($this->fromFullname)
+            ->setTo(CurrencyConfig::PLN)
+            ->setToFullname(CurrencyConfig::PLN_FULLNAME)
+            ->setDate($this->date)
+        ;
     }
 }

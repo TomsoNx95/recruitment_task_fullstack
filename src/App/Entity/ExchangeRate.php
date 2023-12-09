@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ValueObject;
+namespace App\Entity;
 
 use DateTimeImmutable;
 
@@ -17,9 +17,19 @@ class ExchangeRate
     private $from;
 
     /**
+     * @var
+     */
+    private $fromFullname;
+
+    /**
      * @var string
      */
     private $to;
+
+    /**
+     * @var
+     */
+    private $toFullname;
 
     /**
      * @var float
@@ -27,14 +37,14 @@ class ExchangeRate
     private $mid;
 
     /**
-     * @var float
+     * @var float|null
      */
-    private $buy;
+    private $buy = null;
 
     /**
-     * @var float
+     * @var float|null
      */
-    private $sell;
+    private $sell = null;
 
     /**
      * @var DateTimeImmutable
@@ -63,6 +73,25 @@ class ExchangeRate
     /**
      * @return string
      */
+    public function getFromFullname(): string
+    {
+        return $this->fromFullname;
+    }
+
+    /**
+     * @param string $fromFullname
+     * @return ExchangeRate
+     */
+    public function setFromFullname(string $fromFullname): self
+    {
+        $this->fromFullname = $fromFullname;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getTo(): string
     {
         return $this->to;
@@ -75,6 +104,25 @@ class ExchangeRate
     public function setTo(string $to): self
     {
         $this->to = $to;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToFullname(): string
+    {
+        return $this->toFullname;
+    }
+
+    /**
+     * @param string $toFullname
+     * @return ExchangeRate
+     */
+    public function setToFullname(string $toFullname): self
+    {
+        $this->toFullname = $toFullname;
 
         return $this;
     }
@@ -99,18 +147,18 @@ class ExchangeRate
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getBuy(): float
+    public function getBuy(): ?float
     {
         return $this->buy;
     }
 
     /**
-     * @param float $buy
+     * @param float|null $buy
      * @return ExchangeRate
      */
-    public function setBuy(float $buy): self
+    public function setBuy(?float $buy): self
     {
         $this->buy = $buy;
 
@@ -118,18 +166,18 @@ class ExchangeRate
     }
 
     /**
-     * @return float
+     * @return float|null
      */
-    public function getSell(): float
+    public function getSell(): ?float
     {
         return $this->sell;
     }
 
     /**
-     * @param float $sell
+     * @param float|null $sell
      * @return ExchangeRate
      */
-    public function setSell(float $sell): self
+    public function setSell(?float $sell): self
     {
         $this->sell = $sell;
 

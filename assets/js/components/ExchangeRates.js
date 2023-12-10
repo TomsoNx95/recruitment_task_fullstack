@@ -25,7 +25,7 @@ const ExchangeRates = () =>
     }, []);
 
     return (
-        <>
+        <div className="m-5">
             <h3 className="text-center mt-5">
                 Board with exchanges rates
             </h3>
@@ -94,7 +94,7 @@ const ExchangeRates = () =>
                     : null}
                 </tbody>
             </table>
-        </>
+        </div>
     );
 };
 

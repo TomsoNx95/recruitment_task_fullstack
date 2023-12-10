@@ -1,12 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {useRef, useEffect, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import ApiResponseHelper from '../helper/ApiResponseHelper';
 import '../../css/ExchangeRates.css';
 import axiosInstance from '../axiosConfig/axiosInstance';
 import Spinner from './Spinner';
 
-const ExchangeRates = () =>
-{
+const ExchangeRates = () => {
     const now = new Date();
     const today = now.toISOString().split('T')[0];
     const minDate = '2023-01-01';
@@ -28,14 +27,12 @@ const ExchangeRates = () =>
     const [selectedDate, setSelectedDate] = useState(getDateToRequest());
 
     const handleDateChange = (event) => {
-        if (event.target.value.length > 0) {
-            setSelectedDate(
-                event.target.value.length > 0
-                    ? event.target.value
-                    : ''
-            );
-            history.push('?date=' + event.target.value);
-        }
+        setSelectedDate(
+            event.target.value.length > 0
+                ? event.target.value
+                : ''
+        );
+        history.push('?date=' + event.target.value);
     };
 
     useEffect(() => {
@@ -56,7 +53,7 @@ const ExchangeRates = () =>
     }, [selectedDate]);
 
     if (loading) {
-        return <Spinner />;
+        return <Spinner/>;
     }
 
     return (
@@ -81,89 +78,89 @@ const ExchangeRates = () =>
                 />
             </div>
             {loading ? (
-                <Spinner />
+                <Spinner/>
             ) : (
                 <table className="table exchange-rates-table table-bordered my-5">
                     <thead>
-                        <tr>
-                            <th scope="col" rowSpan={2} className="text-center align-middle currency-th">
-                                Currency name
+                    <tr>
+                        <th scope="col" rowSpan={2} className="text-center align-middle currency-th">
+                            Currency name
+                        </th>
+                        <th scope="col" rowSpan={2} className="text-center align-middle currency-th">
+                            Currency code
+                        </th>
+                        <th scope="col" colSpan={4} className="text-center current-date-th">
+                            Current date
+                        </th>
+                        {exchangeRatesByDate.length > 0 && <>
+                            <th scope="col" colSpan={4} className="text-center choosen-date-th">
+                                Choosen date
                             </th>
-                            <th scope="col" rowSpan={2} className="text-center align-middle currency-th">
-                                Currency code
-                            </th>
-                            <th scope="col" colSpan={4} className="text-center current-date-th">
-                                Current date
-                            </th>
-                            {exchangeRatesByDate.length > 0 && <>
-                                <th scope="col" colSpan={4} className="text-center choosen-date-th">
-                                    Choosen date
-                                </th>
-                            </>}
-                        </tr>
-                        <tr>
-                            <th className="text-center align-middle current-date-th">
+                        </>}
+                    </tr>
+                    <tr>
+                        <th className="text-center align-middle current-date-th">
+                            Date
+                        </th>
+                        <th className="text-center align-middle current-date-th">
+                            MID
+                        </th>
+                        <th className="text-center align-middle current-date-th">
+                            BUY
+                        </th>
+                        <th className="text-center align-middle current-date-th">
+                            SELL
+                        </th>
+                        {exchangeRatesByDate.length > 0 && <>
+                            <th className="text-center align-middle choosen-date-th">
                                 Date
                             </th>
-                            <th className="text-center align-middle current-date-th">
+                            <th className="text-center align-middle choosen-date-th">
                                 MID
                             </th>
-                            <th className="text-center align-middle current-date-th">
+                            <th className="text-center align-middle choosen-date-th">
                                 BUY
                             </th>
-                            <th className="text-center align-middle current-date-th">
+                            <th className="text-center align-middle choosen-date-th">
                                 SELL
                             </th>
-                            {exchangeRatesByDate.length > 0 && <>
-                                <th className="text-center align-middle choosen-date-th">
-                                    Date
-                                </th>
-                                <th className="text-center align-middle choosen-date-th">
-                                    MID
-                                </th>
-                                <th className="text-center align-middle choosen-date-th">
-                                    BUY
-                                </th>
-                                <th className="text-center align-middle choosen-date-th">
-                                    SELL
-                                </th>
-                            </>}
-                        </tr>
+                        </>}
+                    </tr>
                     </thead>
                     <tbody>
-                        {exchangeRatesToday.length > 0
+                    {exchangeRatesToday.length > 0
                         ? exchangeRatesToday.map((row, key) => (
                             <tr key={key}>
                                 <td className="text-center align-middle bg-light">
-                                    { row.fromFullname }
+                                    {row.fromFullname}
                                 </td>
                                 <td className="text-center align-middle bg-light">
-                                    { row.from }
+                                    {row.from}
                                 </td>
                                 <td className="text-center align-middle bg-light">
-                                    { new Date(row.date.date).toLocaleDateString() }
+                                    {new Date(row.date.date).toLocaleDateString()}
                                 </td>
                                 <td className="text-center align-middle bg-light">
-                                    { row.mid ?? 0.00 }
+                                    {row.mid ?? 0.00}
                                 </td>
                                 <td className="text-center align-middle bg-light">
-                                    { row.buy ?? 'No buying' }
+                                    {row.buy ?? 'No buying'}
                                 </td>
                                 <td className="text-center align-middle bg-light">
-                                    { row.sell ?? 'No selling' }
+                                    {row.sell ?? 'No selling'}
                                 </td>
                                 {exchangeRatesByDate.length > 0 && <>
                                     <td className="text-center align-middle bg-light">
-                                        { new Date(exchangeRatesByDate[key].date.date).toLocaleDateString() }
+                                        {new Date(exchangeRatesByDate[key].date.date).toLocaleDateString()}
                                     </td>
                                     <td className="text-center align-middle bg-light">
-                                        { exchangeRatesByDate[key].mid ?? 0.00}
+                                        {exchangeRatesByDate[key].mid ?? 0.00}
                                     </td>
                                     <td className="text-center align-middle bg-light">
-                                        { exchangeRatesByDate[key].buy ?? 'No buying'}
+                                        {exchangeRatesByDate[key].buy ?? 'No buying'}
                                     </td>
                                     <td className="text-center align-middle bg-light">
-                                        { exchangeRatesByDate[key].sell ?? 'No selling'}
+                                        {exchangeRatesByDate[key].sell ?? 'No selling'}
                                     </td>
                                 </>}
                             </tr>

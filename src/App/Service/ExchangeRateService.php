@@ -67,7 +67,7 @@ final class ExchangeRateService
     }
 
     /**
-     * @return ExchangeRate[]
+     * @return array
      * @throws ClientExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
@@ -96,7 +96,7 @@ final class ExchangeRateService
     /**
      * @param ExchangeRateList $rateList
      * @param string $exchangeCurrency
-     * @return ExchangeRate[]
+     * @return array
      * @throws NotSupportedCurrencyException
      */
     private function getExchangeRateList(ExchangeRateList $rateList, string $exchangeCurrency): array

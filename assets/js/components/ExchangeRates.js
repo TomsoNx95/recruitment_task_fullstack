@@ -27,7 +27,7 @@ const ExchangeRates = () =>
     return (
         <div className="m-5">
             <h3 className="text-center mt-5">
-                Board with exchanges rates
+                Board with exchange rates
             </h3>
             <div className="form-group d-flex align-items-center">
                 <label htmlFor="currencyDate" className="mb-0 pr-3">

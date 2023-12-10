@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import ApiResponseHelper from '../helper/ApiResponseHelper';
 import '../../css/ExchangeRates.css';
 import axiosInstance from '../axiosConfig/axiosInstance';
@@ -7,17 +8,34 @@ import Spinner from './Spinner';
 const ExchangeRates = () =>
 {
     const now = new Date();
-    const today = now.toISOString().substring(0, 10);
+    const today = now.toISOString().split('T')[0];
+    const minDate = '2023-01-01';
 
     const currencyDateRef = useRef();
+    const history = useHistory();
 
     const [exchangeRatesToday, setExchangeRatesToday] = useState([]);
     const [exchangeRatesByDate, setExchangeRatesByDate] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedDate, setSelectedDate] = useState('');
+
+    const getDateToRequest = () => {
+        let dateFromUrl = new URLSearchParams(history.location.search).get('date');
+        dateFromUrl = dateFromUrl ? new Date(dateFromUrl).toISOString().split('T')[0] : '';
+
+        return dateFromUrl;
+    }
+
+    const [selectedDate, setSelectedDate] = useState(getDateToRequest());
 
     const handleDateChange = (event) => {
-        setSelectedDate(new Date(event.target.value).toISOString().split('T')[0]);
+        if (event.target.value.length > 0) {
+            setSelectedDate(
+                event.target.value.length > 0
+                    ? event.target.value
+                    : ''
+            );
+            history.push('?date=' + event.target.value);
+        }
     };
 
     useEffect(() => {
@@ -35,7 +53,11 @@ const ExchangeRates = () =>
         });
 
         setLoading(false);
-    }, []);
+    }, [selectedDate]);
+
+    if (loading) {
+        return <Spinner />;
+    }
 
     return (
         <div className="m-5">
@@ -50,11 +72,12 @@ const ExchangeRates = () =>
                     id="exchangeRateDate"
                     name="exchangeRateDate"
                     type="date"
-                    min="2023-01-01"
+                    min={minDate}
                     max={today}
                     onChange={handleDateChange}
                     ref={currencyDateRef}
                     className="form-control w-25"
+                    value={selectedDate}
                 />
             </div>
             {loading ? (

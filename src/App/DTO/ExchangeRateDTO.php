@@ -39,7 +39,7 @@ final class ExchangeRateDTO
      */
     public function getMidValue(): float
     {
-        return round($this->midValue, 2);
+        return $this->midValue;
     }
 
     /**

@@ -15,6 +15,10 @@ use DateTimeImmutable;
  */
 final class CzkToPlnStrategy implements ExchangeRateStrategyInterface
 {
+    private const BUY = null;
+
+    private const SELL = 0.15;
+
     /**
      * @var float
      */
@@ -48,16 +52,6 @@ final class CzkToPlnStrategy implements ExchangeRateStrategyInterface
     }
 
     /**
-     * @param string $from
-     * @param string $to
-     * @return bool
-     */
-    public function supports(string $from, string $to): bool
-    {
-        return CurrencyConfig::CZK === $from && CurrencyConfig::PLN === $to;
-    }
-
-    /**
      * @return ExchangeRate
      */
     public function getCalculatedExchangeRate(): ExchangeRate
@@ -65,8 +59,8 @@ final class CzkToPlnStrategy implements ExchangeRateStrategyInterface
         return $this
             ->exchangeRate
             ->setMid($this->midValue)
-            ->setBuy(null)
-            ->setSell($this->midValue + 0.15)
+            ->setBuy(self::BUY)
+            ->setSell($this->midValue + self::SELL)
             ->setFrom(CurrencyConfig::CZK)
             ->setFromFullname($this->fromFullname)
             ->setTo(CurrencyConfig::PLN)

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\ValueObject;
 
+use App\Config\CurrencyConfig;
+use App\Exception\NotSupportedCurrencyException;
 use DateTimeImmutable;
 
 /**
@@ -47,5 +49,24 @@ final class ExchangeRateList
     public function getDate(): DateTimeImmutable
     {
         return $this->date;
+    }
+
+    /**
+     * @param string $exchangeCurrency
+     * @return array
+     * @throws NotSupportedCurrencyException
+     */
+    public function getSupportedRateList(string $exchangeCurrency): array
+    {
+        $supportedCurrencies = CurrencyConfig::SUPPORTED_CURRENCIES[$exchangeCurrency] ?? [];
+
+        if (empty($supportedCurrencies)) {
+            throw new NotSupportedCurrencyException();
+        }
+
+        return array_intersect_key(
+            $this->rates,
+            array_flip($supportedCurrencies)
+        );
     }
 }

@@ -61,22 +61,22 @@ final class ExchangeRatesController
         $exchangeCurrency = $request->get('exchangeCurrency') ?? CurrencyConfig::PLN;
 
         try {
-            return new JsonResponse([
+            return JsonResponse::create([
                 'data' => [
                     'status' => true,
                     'exchange_rates_today' => $this->exchangeRateService->getExchangeRateListToday(
                         $exchangeCurrency
                     ),
-                    'exchange_rates_date' => $date
+                    'exchange_rates_by_date' => $date
                         ? $this->exchangeRateService->getExchangeRateListByDate(
                             new DateTimeImmutable($date),
                             $exchangeCurrency
-                          )
+                        )
                         : [],
                 ],
                 'message' => 'Exchange rate list have been retrieved successfully.',
                 'code' => Response::HTTP_OK,
-            ], Response::HTTP_OK);
+            ], Response::HTTP_OK, ['Content-type' => 'application/json']);
         } catch (Exception|
             ClientExceptionInterface|
             RedirectionExceptionInterface|
@@ -91,7 +91,7 @@ final class ExchangeRatesController
                 'Code: ' . $exception->getCode()
             );
 
-            return new JsonResponse([
+            return JsonResponse::create([
                 'data' => [
                     'status' => false,
                 ],

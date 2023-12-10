@@ -39,12 +39,13 @@ final class ExchangeRateService
     }
 
     /**
-     * @return ExchangeRate[]
+     * @param string $exchangeCurrency
+     * @return array
      * @throws ClientExceptionInterface
+     * @throws NotSupportedCurrencyException
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws NotSupportedCurrencyException
      * @throws Exception
      */
     public function getExchangeRateListToday(string $exchangeCurrency = CurrencyConfig::PLN): array
@@ -100,16 +101,7 @@ final class ExchangeRateService
      */
     private function getExchangeRateList(ExchangeRateList $rateList, string $exchangeCurrency): array
     {
-        $supportedCurrencies = CurrencyConfig::SUPPORTED_CURRENCIES[$exchangeCurrency] ?? [];
-
-        if (empty($supportedCurrencies)) {
-            throw new NotSupportedCurrencyException();
-        }
-
-        $supportedRateList = array_intersect_key(
-            $rateList->getRates(),
-            array_flip($supportedCurrencies)
-        );
+        $supportedRateList = $rateList->getSupportedRateList($exchangeCurrency);
 
         $exchangeRateFactory = new ExchangeRateFactory();
 

@@ -15,6 +15,10 @@ use DateTimeImmutable;
  */
 final class IdrToPlnStrategy implements ExchangeRateStrategyInterface
 {
+    private const BUY = null;
+
+    private const SELL = 0.15;
+
     /**
      * @var float
      */
@@ -31,7 +35,7 @@ final class IdrToPlnStrategy implements ExchangeRateStrategyInterface
     private $fromFullname;
 
     /**
-     * @var \App\Entity\ExchangeRate
+     * @var ExchangeRate
      */
     private $exchangeRate;
 
@@ -48,16 +52,6 @@ final class IdrToPlnStrategy implements ExchangeRateStrategyInterface
     }
 
     /**
-     * @param string $from
-     * @param string $to
-     * @return bool
-     */
-    public function supports(string $from, string $to): bool
-    {
-        return CurrencyConfig::IDR === $from && CurrencyConfig::PLN === $to;
-    }
-
-    /**
      * @return ExchangeRate
      */
     public function getCalculatedExchangeRate(): ExchangeRate
@@ -65,8 +59,8 @@ final class IdrToPlnStrategy implements ExchangeRateStrategyInterface
         return $this
             ->exchangeRate
             ->setMid($this->midValue)
-            ->setBuy(null)
-            ->setSell($this->midValue + 0.15)
+            ->setBuy(self::BUY)
+            ->setSell($this->midValue + self::SELL)
             ->setFrom(CurrencyConfig::IDR)
             ->setFromFullname($this->fromFullname)
             ->setTo(CurrencyConfig::PLN)

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Traits\ObjectToArrayTrait;
 use DateTimeImmutable;
 
 /**
@@ -11,6 +12,8 @@ use DateTimeImmutable;
  */
 class ExchangeRate
 {
+    use ObjectToArrayTrait;
+
     /**
      * @var string
      */
@@ -141,7 +144,7 @@ class ExchangeRate
      */
     public function setMid(float $mid): self
     {
-        $this->mid = $mid;
+        $this->mid = round($mid, 2) ?: null;
 
         return $this;
     }
@@ -160,7 +163,7 @@ class ExchangeRate
      */
     public function setBuy(?float $buy): self
     {
-        $this->buy = $buy;
+        $this->buy = round($buy, 2) ?: null;
 
         return $this;
     }
@@ -179,7 +182,7 @@ class ExchangeRate
      */
     public function setSell(?float $sell): self
     {
-        $this->sell = $sell;
+        $this->sell = round($sell, 2) ?: null;
 
         return $this;
     }

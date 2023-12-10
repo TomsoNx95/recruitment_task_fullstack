@@ -17,7 +17,7 @@ use App\Strategy\ExchangeRate\ExchangeRateStrategyInterface;
 final class ExchangeRateFactory
 {
     /**
-     * @var ExchangeRate[]
+     * @var array
      */
     private $exchangeRates = [];
 
@@ -57,11 +57,11 @@ final class ExchangeRateFactory
      */
     public function addExchangeRate(ExchangeRate $exchangeRate): void
     {
-        $this->exchangeRates[] = $exchangeRate;
+        $this->exchangeRates[] = $exchangeRate->toArray();
     }
 
     /**
-     * @return ExchangeRate[]
+     * @return array
      */
     public function getExchangeRates(): array
     {

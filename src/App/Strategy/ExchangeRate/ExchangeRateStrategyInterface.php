@@ -12,14 +12,7 @@ use App\Entity\ExchangeRate;
 interface ExchangeRateStrategyInterface
 {
     /**
-     * @return \App\Entity\ExchangeRate
+     * @return ExchangeRate
      */
     public function getCalculatedExchangeRate(): ExchangeRate;
-
-    /**
-     * @param string $from
-     * @param string $to
-     * @return bool
-     */
-    public function supports(string $from, string $to): bool;
 }

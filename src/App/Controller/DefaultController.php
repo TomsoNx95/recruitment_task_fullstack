@@ -5,13 +5,19 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{
+    Request,
+    Response,
+};
 
-
+/**
+ * Class DefaultController
+ */
 class DefaultController extends AbstractController
 {
-
+    /**
+     * @return Response
+     */
     public function index(): Response
     {
         return $this->render(
@@ -19,6 +25,10 @@ class DefaultController extends AbstractController
         );
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function setupCheck(Request $request): Response
     {
         $responseContent = json_encode([
@@ -26,12 +36,11 @@ class DefaultController extends AbstractController
                 ? (int) $request->get('testParam')
                 : null
         ]);
+
         return new Response(
             $responseContent,
             Response::HTTP_OK,
             ['Content-type' => 'application/json']
         );
     }
-
-
 }

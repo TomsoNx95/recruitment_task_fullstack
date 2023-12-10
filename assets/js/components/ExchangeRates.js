@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import ApiResponseHelper from '../helper/ApiResponseHelper';
-import axios from 'axios';
 import '../../css/ExchangeRates.css';
+import axiosInstance from '../axiosConfig/axiosInstance';
 
 const ExchangeRates = () =>
 {
@@ -10,18 +10,25 @@ const ExchangeRates = () =>
 
     const currencyDateRef = useRef();
 
-    const [exchangeRates, setExchangeRates] = useState([]);
+    const [exchangeRatesToday, setExchangeRatesToday] = useState([]);
+    const [exchangeRatesByDate, setExchangeRatesByDate] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(
-            'http://telemedi-zadanie.localhost/api/exchange-rate-list'
+        setLoading(true);
+
+        axiosInstance.get(
+            '/api/exchange-rate-list'
         ).then(response => {
-            if (ApiResponseHelper.isSuccess(response?.data?.code)) {
-                setExchangeRates(response.data.data.exchange_rates_today);
+            if (ApiResponseHelper.isSuccess(response?.code)) {
+                setExchangeRatesToday(response.data.exchange_rates_today);
+                setExchangeRatesByDate(response.data.exchange_rates_by_date);
             }
         }).catch(function (error) {
             console.log(error);
         });
+
+        setLoading(false);
     }, []);
 
     return (
@@ -44,56 +51,62 @@ const ExchangeRates = () =>
                     className="form-control w-25"
                 />
             </div>
-            <table className="table table-bordered my-5">
-                <thead>
-                    <tr>
-                        <th scope="col"  className="text-center align-middle">
-                            Currency name
-                        </th>
-                        <th scope="col" className="text-center align-middle">
-                            Currency code
-                        </th>
-                        <th scope="col" className="text-center align-middle">
-                            Date
-                        </th>
-                        <th scope="col" className="text-center align-middle">
-                            MID
-                        </th>
-                        <th scope="col" className="text-center align-middle">
-                            BUY
-                        </th>
-                        <th scope="col" className="text-center align-middle">
-                            SELL
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {exchangeRates
-                    ? exchangeRates.map((row, key) => (
-                        <tr key={key}>
-                            <td className="text-center align-middle">
-                                { row.fromFullname }
-                            </td>
-                            <td className="text-center align-middle">
-                                { row.from }
-                            </td>
-                            <td className="text-center align-middle">
-                                { new Date(row.date.date).toLocaleDateString() }
-                            </td>
-                            <td className="text-center align-middle">
-                                { row.mid ?? 0.00 }
-                            </td>
-                            <td className="text-center align-middle">
-                                { row.buy ?? 'No buying' }
-                            </td>
-                            <td className="text-center align-middle">
-                                { row.sell ?? 'No selling' }
-                            </td>
+            {loading ? (
+                <div className={'text-center'}>
+                    <span className="fa fa-spin fa-spinner fa-4x"></span>
+                </div>
+            ) : (
+                <table className="table table-bordered my-5">
+                    <thead>
+                        <tr>
+                            <th className="text-center align-middle">
+                                Currency name
+                            </th>
+                            <th className="text-center align-middle">
+                                Currency code
+                            </th>
+                            <th className="text-center align-middle">
+                                Date
+                            </th>
+                            <th className="text-center align-middle">
+                                MID
+                            </th>
+                            <th className="text-center align-middle">
+                                BUY
+                            </th>
+                            <th className="text-center align-middle">
+                                SELL
+                            </th>
                         </tr>
-                    ))
-                    : null}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {exchangeRatesToday
+                        ? exchangeRatesToday.map((row, key) => (
+                            <tr key={key}>
+                                <td className="text-center align-middle">
+                                    { row.fromFullname }
+                                </td>
+                                <td className="text-center align-middle">
+                                    { row.from }
+                                </td>
+                                <td className="text-center align-middle">
+                                    { new Date(row.date.date).toLocaleDateString() }
+                                </td>
+                                <td className="text-center align-middle">
+                                    { row.mid ?? 0.00 }
+                                </td>
+                                <td className="text-center align-middle">
+                                    { row.buy ?? 'No buying' }
+                                </td>
+                                <td className="text-center align-middle">
+                                    { row.sell ?? 'No selling' }
+                                </td>
+                            </tr>
+                        ))
+                        : null}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 };

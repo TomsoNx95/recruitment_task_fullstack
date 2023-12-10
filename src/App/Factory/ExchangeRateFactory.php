@@ -8,6 +8,7 @@ use App\Config\CurrencyConfig;
 use App\DTO\ExchangeRateDTO;
 use App\Entity\ExchangeRate;
 use App\Exception\NotSupportedCurrencyException;
+use App\Helper\ArrayHelper;
 use App\Helper\StringHelper;
 use App\Strategy\ExchangeRate\ExchangeRateStrategyInterface;
 

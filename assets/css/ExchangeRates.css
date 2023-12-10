@@ -1,0 +1,11 @@
+.exchange-rates-table .currency-th {
+    background-color: lightblue;
+}
+
+.exchange-rates-table .current-date-th {
+    background-color: lightcoral;
+}
+
+.exchange-rates-table .choosen-date-th {
+    background-color: lightgreen;
+}
